@@ -64,4 +64,4 @@ En un entorno donde la gestión adecuada de medicamentos, proveedores y clientes
   Sin una gestión del personal, es complicado identificar las necesidades de contratación o capacitación, derivando a una sobrecarga de trabajo para el personal y disminución en la calidad del servicio.
 
 ## DER (Diagrama Entidad Relación)  
-![Diagrama Entidad Relación](https://github.com/denist050/DataBaseFarmaciaMySQL/blob/main/EER%20diagram.png?raw=true)
+![Diagrama Entidad Relación](https://github.com/denist050/DataBaseFarmaciaMySQL/blob/main/EER%20diagrama.png)
