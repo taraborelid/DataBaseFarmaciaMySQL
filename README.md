@@ -7,8 +7,8 @@
 4. [DER (Diagrama Entidad Relación)](#der-diagrama-entidad-relación)  
 
 ## Introducción  
-El presente proyecto tiene como finalidad el diseño e implementación de una base de datos robusta y eficiente para una farmacia.
-En un entorno donde la gestión adecuada de medicamentos, proveedores y clientes es fundamental, este sistema permitirá optimizar los procesos operativos y mejorar la calidad del servicio. La base de datos se enfocará en varias áreas clave, incluyendo la administración de inventarios, la gestión de compras y ventas, el seguimiento de recetas médicas, y el registro de interacciones con obras sociales y prepagas. Al integrar y centralizar la información, se espera que la farmacia no solo responda de manera más ágil a las demandas del mercado, sino que también garantice la seguridad de los datos y la satisfacción del cliente.  
+El presente proyecto tiene como finalidad el diseño e implementación de una base de datos eficiente para una farmacia.
+En un entorno donde la gestión adecuada de medicamentos, proveedores y clientes es fundamental, este sistema permitirá optimizar los procesos operativos y mejorar la calidad del servicio. La base de datos se enfocará en varias áreas clave, incluyendo la administración de inventarios, la gestión de compras y ventas, el seguimiento de recetas médicas, y el registro de interacciones con obras sociales y prepagas. 
 
 ## Objetivo  
 1. **Gestión de Medicamentos**  
