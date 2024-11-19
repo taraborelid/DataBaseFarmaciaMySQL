@@ -1,5 +1,5 @@
 DROP DATABASE IF EXISTS farmacia_dt;
--- PROYECTO FARMACIA 
+-- PROYECTO FARMACIA DENIS TARABORELI 
 -- CREACION DE LA BASE DE DATOS
 
 CREATE DATABASE farmacia_dt;
@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS medicamento_laboratorio(
     fecha_vencimiento DATETIME,
     farmaco_id INT NOT NULL,
     laboratorio_id INT NOT NULL,
+    eliminado BOOLEAN DEFAULT FALSE,
     foreign key (farmaco_id) REFERENCES farmaco(farmaco_id),
     foreign key (laboratorio_id) REFERENCES laboratorio(laboratorio_id)
 );
@@ -110,11 +111,11 @@ CREATE TABLE IF NOT EXISTS stock_farmacia(
 );  
 
 CREATE TABLE IF NOT EXISTS compra(
-	compra_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    numero_comprobante VARCHAR(50) NOT NULL,
-    fecha_compra DATETIME NOT NULL,
-    total DECIMAL(10,2) NOT NULL,
-    proveedor_id INT NOT NULL,
+	compra_id INT PRIMARY KEY,
+    numero_comprobante VARCHAR(50) ,
+    fecha_compra DATETIME,
+    total DECIMAL(10, 2),
+    proveedor_id INT,
     foreign key (proveedor_id) REFERENCES proveedor(proveedor_id) 
 );
 
@@ -210,6 +211,7 @@ CREATE TABLE IF NOT EXISTS personal(
 CREATE TABLE IF NOT EXISTS venta(
 	venta_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     comprobante VARCHAR(50) NOT NULL,
+    precio_total DECIMAL(10, 2),
     fecha_venta DATETIME,
     cliente_id INT NOT NULL,
     personal_id INT NOT NULL,
@@ -232,7 +234,8 @@ CREATE TABLE IF NOT EXISTS detalle_venta(
 	detalle_venta_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     cantidad INT NOT NULL,
     stock_farmacia_id INT NOT NULL,
-    precio_unitario INT NOT NULL,
+    precio_unitario DECIMAL(10, 2),
+    precio_final DECIMAL (10, 2),
     venta_id INT NOT NULL,
     receta_id INT,
     foreign key (venta_id) REFERENCES venta(venta_id),
@@ -400,25 +403,25 @@ INSERT INTO medicamento_laboratorio (nombre, presentacion, precio_unitario, cant
 ('Advil', 'Cápsulas blandas 400mg', 4500, 850, 'venta libre', '2024-11-30', 2, 20), -- Ibuprofeno - Bagó
 ('Brufen', 'Cápsulas 600mg', 3800, 900, 'venta libre', '2024-08-15', 2, 27), -- Ibuprofeno - Bernabó
 ('Aspirina', 'Tabletas 500mg', 3350, 1200, 'venta libre', '2026-01-30', 3, 2), -- Aspirina - Bayer
-('Amoxil', 'Suspensión 250mg/5ml', 18000, 600, 'receta', '2025-06-20', 4, 26), -- Amoxicilina - Richmond
-('Amoxil', 'Cápsulas 500mg', 21000, 700, 'receta', '2025-12-10', 4, 1), -- Amoxicilina - Pfizer
+('Amoxil 250', 'Suspensión 250mg/5ml', 18000, 600, 'receta', '2025-06-20', 4, 26), -- Amoxicilina - Richmond
+('Amoxil 500', 'Cápsulas 500mg', 21000, 700, 'receta', '2025-12-10', 4, 1), -- Amoxicilina - Pfizer
 ('Cipro', 'Tabletas 500mg', 31000, 500, 'receta', '2026-09-15', 5, 1), -- Ciprofloxacino - Pfizer
 ('Claritin', 'Tabletas 10mg', 12000, 750, 'venta libre', '2025-05-30', 6, 8), -- Loratadina - Johnson & Johnson
 ('Loramax', 'Jarabe 5mg/5ml', 13500, 400, 'venta libre', '2025-10-25', 6, 25), -- Loratadina - Gador
-('Glucophage', 'Tabletas 500mg', 9500, 600, 'receta', '2024-12-01', 7, 6), -- Metformina - GlaxoSmithKline
-('Glucophage', 'Tabletas 850mg', 10500, 800, 'receta', '2025-03-15', 7, 28), -- Metformina - Montpellier
-('Zocor', 'Tabletas 40mg', 17500, 450, 'receta', '2026-02-18', 8, 2), -- Simvastatina - Bayer
-('Zocor', 'Tabletas 10mg', 16500, 300, 'receta', '2024-09-10', 8, 26), -- Simvastatina - Richmond
-('Zocor', 'Tabletas 20mg', 15500, 500, 'receta', '2025-11-22', 8, 30), -- Simvastatina - Kemex
+('Glucophage 500', 'Tabletas 500mg', 9500, 600, 'receta', '2024-12-01', 7, 6), -- Metformina - GlaxoSmithKline
+('Glucophage 850', 'Tabletas 850mg', 10500, 800, 'receta', '2025-03-15', 7, 28), -- Metformina - Montpellier
+('Zocor 40', 'Tabletas 40mg', 17500, 450, 'receta', '2026-02-18', 8, 2), -- Simvastatina - Bayer
+('Zocor 10', 'Tabletas 10mg', 16500, 300, 'receta', '2024-09-10', 8, 26), -- Simvastatina - Richmond
+('Zocor 20', 'Tabletas 20mg', 15500, 500, 'receta', '2025-11-22', 8, 30), -- Simvastatina - Kemex
 ('Ventolin', 'Inhalador 100 mcg/dosis', 22000, 550, 'receta', '2026-03-05', 9, 7), -- Salbutamol - AstraZeneca
-('Salbutamol', 'Jarabe 2mg/5ml', 21000, 650, 'receta', '2025-10-05', 9, 20), -- Salbutamol - Bagó
-('Salbutamol', 'Inhalador 200 mcg/dosis', 23000, 500, 'receta', '2026-07-15', 9, 31), -- Salbutamol - LKM
+('Salbutamol Jarabe', 'Jarabe 2mg/5ml', 21000, 650, 'receta', '2025-10-05', 9, 20), -- Salbutamol - Bagó
+('Salbutamol Inhalador', 'Inhalador 200 mcg/dosis', 23000, 500, 'receta', '2026-07-15', 9, 31), -- Salbutamol - LKM
 ('Losec', 'Cápsulas 20mg', 27000, 800, 'venta libre', '2026-05-20', 10, 3), -- Omeprazol - Roche
 ('Omeprazol', 'Tabletas 40mg', 2500, 700, 'venta libre', '2025-04-30', 10, 24), -- Omeprazol - Elea
-('Vasotec', 'Tabletas 5mg', 15000, 800, 'receta', '2026-08-20', 11, 6), -- Enalapril - GlaxoSmithKline
-('Vasotec', 'Tabletas 10mg', 16000, 650, 'receta', '2025-09-25', 11, 24), -- Enalapril - Elea
-('Plavix', 'Tabletas 75mg', 35000, 900, 'receta', '2025-10-30', 12, 1), -- Clopidogrel - Pfizer
-('Plavix', 'Tabletas 300mg', 34000, 850, 'receta', '2025-06-15', 12, 24), -- Clopidogrel - Elea
+('Vasotec 5', 'Tabletas 5mg', 15000, 800, 'receta', '2026-08-20', 11, 6), -- Enalapril - GlaxoSmithKline
+('Vasotec 10', 'Tabletas 10mg', 16000, 650, 'receta', '2025-09-25', 11, 24), -- Enalapril - Elea
+('Plavix 75', 'Tabletas 75mg', 35000, 900, 'receta', '2025-10-30', 12, 1), -- Clopidogrel - Pfizer
+('Plavix 300', 'Tabletas 300mg', 34000, 850, 'receta', '2025-06-15', 12, 24), -- Clopidogrel - Elea
 ('Cozaar', 'Tabletas 50mg', 32000, 400, 'receta', '2026-04-10', 13, 4), -- Losartán - Novartis
 ('Lyrica', 'Cápsulas 75mg', 24000, 300, 'receta', '2025-12-20', 19, 4), -- Gabapentina - Novartis
 ('Sertraline', 'Tabletas 50mg', 15450, 450, 'receta', '2026-03-30', 18, 5), -- Sertralina - Sanofi
@@ -493,15 +496,15 @@ INSERT INTO proveedor_medicamento (proveedor_id, medicamento_laboratorio_id) VAL
 (5, 9), (5, 14), (5, 15), (5, 19), (5, 24),
 (5, 26), (5, 27), (5, 28), (5, 41),(5, 48),(5,50),(5,54);
 
-INSERT INTO compra(numero_comprobante, fecha_compra, total, proveedor_id) VALUES
-('FC-2024-001', '2024-08-14', 997.000, 2),
-('FC-2024-004', '2024-09-21', 800.000, 2),
-('FC-2024-003', '2024-07-30', 809.000, 4),
-('FC-2024-002', '2024-06-15', 557.000, 4),
-('FC-2024-005', '2024-10-02', 308.400, 5),
-('FC-2024-006', '2024-10-10', 252.500, 1),
-('FC-2024-007', '2024-09-05', 113.400, 3),
-('FC-2024-008', '2024-09-29', 349.000, 1);
+INSERT INTO compra(compra_id, numero_comprobante, fecha_compra, total, proveedor_id) VALUES
+(1,'FC-2024-001', '2024-08-14', 997000, 2),
+(2,'FC-2024-004', '2024-09-21', 800000, 2),
+(3,'FC-2024-003', '2024-07-30', 809000, 4),
+(4,'FC-2024-002', '2024-06-15', 557000, 4),
+(5,'FC-2024-005', '2024-10-02', 308400, 5),
+(6,'FC-2024-006', '2024-10-10', 252500, 1),
+(7,'FC-2024-007', '2024-09-05', 113400, 3),
+(8,'FC-2024-008', '2024-09-29', 349000, 1);
 
 
 -- compras al proveedor 2
@@ -715,6 +718,8 @@ INSERT INTO detalle_venta ( cantidad,stock_farmacia_id ,precio_unitario, venta_i
 (3,18,32400,6,null),(1,15,26400,6,12),(1,7,20000,7,13);
 
 
+
+
 select* from cliente;
 select * from stock_farmacia;
 select * from detalle_compra WHERE compra_id = 2;
@@ -813,8 +818,8 @@ SELECT
     c.EMAIL as "Email",
     c.dni  as "DNI",
     c.fecha_nacimiento as "Fecha Nacimiento",
-    o.razon_social as "Obra Social",
-    p.razon_social as "Prepaga", 
+    COALESCE(o.razon_social, "SIN COBERTURA") as "Obra Social",
+    COALESCE(p.razon_social, "SIN COBERTURA") as "Prepaga", 
     c.numero_afiliado as "Numero de Afiliado",
     n.nombre as "Nacionalidad",
     provincia.nombre as "Provincia",
@@ -833,6 +838,611 @@ FROM cliente c
 ORDER BY cliente_id DESC;
 
 select * from clientes_detalles;
+
+select * from medicamento_laboratorio;
+select * from compra;
+select * from detalle_compra;
+CALL insertar_compra(9, "FC-2024-009", "2024-11-15", 3, '3, 4, 6, 6', 'Aspirina, Cipro, Codeine, Tylenol');
+
+/*Procedimiento para ingresar las compras y los detalles por comprobante, compra id, fecha_compra, proveedor, la cantidad y los medicamentos*/
+DROP PROCEDURE IF EXISTS insertar_compra;
+DELIMITER //
+
+CREATE PROCEDURE insertar_compra(
+	IN i_compra_id INT,
+	IN i_numero_comprobante VARCHAR(50),
+    IN i_fecha_compra DATETIME,
+    IN i_proveedor_id INT,
+    IN i_cantidad VARCHAR(100), 
+    IN i_nombres VARCHAR(1000)
+)
+BEGIN 
+	DECLARE delimitador CHAR(1) DEFAULT ',';
+    DECLARE error_message VARCHAR(100);
+    DECLARE medicamento_id INT;
+    DECLARE precio_unitario DECIMAL(10, 2);
+    DECLARE precio_total DECIMAL(10, 2);
+    DECLARE total_proveedor_id INT;
+    DECLARE total_compra_id INT;
+    DECLARE total_compras INT;
+    
+
+    /*Validar que los valores no sean nulos o negativos si corresponde*/
+IF i_cantidad <= 0 THEN
+	SET error_message = 'La cantidad de la compra de medicamentos debe ser mayor que cero';
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
+END IF;
+
+
+IF i_compra_id <= 0 THEN
+	SET error_message = 'El id de compra debe ser mayor que cero';
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
+END IF;
+    
+    /* Validar que los valores no sean nulos o negativos si corresponde */  
+    IF i_proveedor_id <= 0 THEN  
+        SET error_message = 'El id del proveedor debe ser mayor a 1';  
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;  
+    END IF;  
+
+    SELECT MAX(proveedor_id)  
+    INTO total_proveedor_id  
+    FROM proveedor;  
+
+    IF i_proveedor_id >= total_proveedor_id THEN  
+        SET error_message = CONCAT('El id del proveedor debe ser menor a ', total_proveedor_id);   
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;  
+    END IF;  
+
+    IF i_compra_id <= 0 THEN  
+        SET error_message = 'El id de compra debe ser mayor que cero';  
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;  
+    END IF;  
+
+   SELECT MAX(compra_id)  
+	INTO  total_compra_id
+    FROM compra;  
+
+    IF i_compra_id <= total_compra_id THEN  
+        SET error_message = CONCAT('El id de la compra debe ser mayor a ', total_compra_id + '. Si usted desea actualizar datos de tabla compra utilice procedimiento insertar_compra.');   
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;  
+    END IF;  
+    
+	INSERT INTO compra(compra_id, numero_comprobante, fecha_compra, total, proveedor_id)   
+	VALUES(i_compra_id, i_numero_comprobante, i_fecha_compra, 0, i_proveedor_id);
+    
+    SET @compra_id = i_compra_id;
+    
+ -- Dividir la cadena de nombres y realizar inserciones en detalle_compra  
+    WHILE CHAR_LENGTH(i_nombres) > 0 DO  
+    
+        SET @nombre = TRIM(SUBSTRING_INDEX(TRIM(i_nombres), delimitador, 1)); -- Obtener el primer nombre y eliminar espacios
+		SET i_nombres = TRIM(SUBSTRING(i_nombres, CHAR_LENGTH(@nombre) + 2)); -- Remover el nombre de la cadena y eliminar espacios
+
+		-- obtener la primera cantidad como INT
+		SET @cantidad = CAST(SUBSTRING_INDEX(TRIM(i_cantidad), delimitador, 1) AS UNSIGNED);  
+		-- remover la cantidad de la cadena
+		SET i_cantidad = TRIM(SUBSTRING(i_cantidad, CHAR_LENGTH(CAST(@cantidad AS CHAR)) + 2));  
+	  
+		-- Mostrar el nombre que se busca  
+		SELECT @nombre AS nombre_busqueda;  
+
+		-- Obtener el medicamento y su precio unitario  
+		select ml.medicamento_laboratorio_id, ml.precio_unitario
+		into @medicamento_laboratorio_id, @precio_unitario
+		from medicamento_laboratorio as ml
+		where TRIM(ml.nombre) = @nombre;
+        
+        
+        -- Verificar si el precio_unitario es NULL  
+        IF @precio_unitario IS NULL THEN  
+            SET error_message = CONCAT('No se encontró el medicamento: ', @nombre);  
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;  
+        END IF;  
+
+        -- Calcular el precio total  
+        SET @precio_total = @cantidad * @precio_unitario;  
+
+        -- Insertar en detalle_compra  
+        INSERT INTO detalle_compra (cantidad, precio_unitario, precio_total, compra_id, medicamento_laboratorio_id)  
+        VALUES (@cantidad, @precio_unitario, @precio_total, @compra_id, @medicamento_laboratorio_id);  
+    END WHILE;  
+	
+    
+    
+    SET total_compras = calcular_total_compra(@compra_id);  
+
+	UPDATE compra
+    SET total = total_compras
+    WHERE compra_id = @compra_id;
+
+
+END //
+
+DELIMITER ;    
+
+
+
+
+
+
+
+
+
+
+
+
+/*Stored Procedure para insertar los detalles de manera mas automatizada de las compras a proveedores. 
+Se puede utilizar select * from medicamento_laboratorio para consultar los nombres de los medicamentos, el nombre debe estar escritos igual que en la tabla medicamento_labotario.
+*/
+
+DROP FUNCTION IF EXISTS obtener_precio_unitario;
+
+DELIMITER $$
+CREATE FUNCTION obtener_precio_unitario(o_medicamento_id INT)
+RETURNS DECIMAL(10, 2)
+
+-- TIPOS DE FUNCIONES 
+-- READS SQL DATA
+-- NO SQL 
+DETERMINISTIC 
+-- NO DETERMINISTIC
+
+BEGIN
+    DECLARE precio_unitario DECIMAL(10, 2);
+	SELECT ml.precio_unitario into precio_unitario
+    FROM medicamento_laboratorio AS ml
+    WHERE ml.medicamento_laboratorio_id = o_medicamento_id;
+    
+    RETURN precio_unitario; 
+END $$
+DELIMITER ;
+
+
+DROP PROCEDURE if exists insertar_detalle_compra;
+DELIMITER $$
+CREATE PROCEDURE insertar_compra(
+	IN i_cantidad INT, 
+    IN i_compra_id INT,
+    IN i_nombre VARCHAR(255)
+    
+) 
+BEGIN
+	DECLARE precio_unitario DECIMAL(10, 2);
+    DECLARE precio_total DECIMAL(10, 2);
+    DECLARE error_message VARCHAR(255);
+    DECLARE total_compra_id DECIMAL(10, 2);
+    DECLARE total_medicamento_ids DECIMAL(10, 2);
+    DECLARE i_medicamento_laboratorio_id INT;
+    DECLARE existe_compra INT;
+/*Validar que los valores no sean nulos o negativos si corresponde*/
+IF i_cantidad <= 0 THEN
+	SET error_message = 'La cantidad de la compra de medicamentos debe ser mayor que cero';
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
+END IF;
+
+IF i_compra_id <= 0 THEN
+	SET error_message = 'El id de compra debe ser mayor que cero';
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
+END IF;
+
+/*Seleccionamos el id que coincida con el nombre ingresado para luego obtener el precio*/
+select ml.medicamento_laboratorio_id
+into i_medicamento_laboratorio_id
+from medicamento_laboratorio as ml
+where i_nombre = ml.nombre;
+
+/*Sino existe el nombre ingresado mostrara este error*/
+IF i_medicamento_laboratorio_id IS NULL THEN  
+	SET error_message = 'El nombre del medicamento ingresado no existe en la tabla medicamento_laboratorio.';  
+	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;  
+END IF;  
+
+
+
+/*Obtenemos el precio_unitario del medicamento desde la tabla medicamento_laboratorio_id a travez de la foreign key*/
+SET precio_unitario = obtener_precio_unitario(i_medicamento_laboratorio_id);
+
+/*Sino posee precio mostrara este error*/
+IF precio_unitario IS NULL THEN 
+	SET error_message = 'El medicamento con ID: ' + p_medicamento_laboratorio_id + 'no tiene un precio unitario definido';
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
+END IF;
+
+-- Verificar si el compra_id ya existe  
+SELECT COUNT(*)  
+INTO existe_compra  
+FROM compra  
+WHERE compra_id = i_compra_id;  
+
+-- Si no existe, entonces insertamos  
+IF existe_compra = 0 THEN   
+    INSERT INTO compra(compra_id, numero_comprobante, fecha_compra, total, proveedor_id)   
+    VALUES(i_compra_id, NULL, NULL, 0, NULL); -- Asigna un valor a 'total' que sea válido  
+END IF;  
+/*Calculamos el precio total para agregarlo a la tabla y hacemos la insercion de los datos*/
+SET precio_total = precio_unitario * i_cantidad;
+
+	INSERT INTO detalle_compra(cantidad, precio_unitario, precio_total, compra_id, medicamento_laboratorio_id) VALUES(
+		i_cantidad, precio_unitario, precio_total, i_compra_id, i_medicamento_laboratorio_id);
+        
+SELECT * from detalle_compra_historica1;
+END $$
+DELIMITER ;
+
+
+
+
+
+
+DROP TABLE IF EXISTS detalle_compra_historica;
+
+/*histórico de detalle compra*/
+CREATE TABLE IF NOT EXISTS detalle_compra_historica (
+    id INT PRIMARY KEY auto_increment,
+    medicamento_laboratorio_id INT,
+    precio_unitario DECIMAL(10, 2),
+    precio_total DECIMAL(10, 2),
+    compra_id INT,
+    cantidad INT,
+    fecha_hora datetime,
+    usuario VARCHAR(200),
+    operacion VARCHAR(200)
+);
+
+/*Vista para ver los medicamentos comprados ingresados a la tabla detalle_compra*/
+
+CREATE VIEW detalle_compra_historica1 AS
+SELECT
+	ml.nombre AS "Medicamento",
+    dch.precio_unitario AS "Precio Unitario",
+	dch.precio_total AS "Precio Total",
+	COALESCE(c.numero_comprobante, "SIN CARGAR") AS "Comprobante",
+    dch.cantidad AS "Cantidad",
+    dch.fecha_hora AS "Fecha de compra",
+    dch.usuario AS "Usuario", 
+    dch.operacion AS "Operacion"
+FROM detalle_compra_historica dch
+	LEFT JOIN medicamento_laboratorio ml ON dch.medicamento_laboratorio_id = ml.medicamento_laboratorio_id
+    LEFT JOIN compra c ON c.compra_id = dch.compra_id
+ORDER BY dch.fecha_hora DESC;
+
+
+
+/*TRIGGER para mantener un registro constante del ingreso de los datos a detalle_compra*/
+DROP TRIGGER IF EXISTS trigger_detalle_compra_alta;
+DELIMITER $$
+CREATE TRIGGER trigger_detalle_compra_alta
+AFTER INSERT ON detalle_compra
+FOR EACH ROW
+BEGIN
+	INSERT INTO detalle_compra_historica(medicamento_laboratorio_id, precio_unitario, precio_total, compra_id, cantidad, fecha_hora, usuario, operacion)
+		VALUES (NEW.medicamento_laboratorio_id, NEW.precio_unitario, NEW.precio_total, NEW.compra_id, NEW.cantidad, now(), user(), 'ALTA');
+
+END $$
+DELIMITER ;
+
+select * from compra;
+SELECT * FROM detalle_compra;
+
+/*consultamos la tabla medicamento para buscar los nombres de los medicamentos para ingresar*/
+SELECT * FROM medicamento_laboratorio;
+
+/*Insertamos compras*/
+/*CANTIDAD, COMPRA_ID, NOMBRE DEL MEDICAMENTO*/
+CALL insertar_detalle_compra(3, 5, 'Zolpidem');
+CALL insertar_detalle_compra(4, 9, 'Brufen');
+CALL insertar_detalle_compra(2, 9, 'Tramadol');
+CALL insertar_detalle_compra(5, 9, 'Tamsulosin');
+CALL insertar_detalle_compra(1, 10, 'Risosetron');
+CALL insertar_detalle_compra(4, 11, 'Vasotec 5');
+CALL insertar_detalle_compra(10, 11, 'Plavix 300');
+CALL insertar_detalle_compra(3, 12, 'Codeine');
+CALL insertar_detalle_compra(7, 12, 'Lyrica');
+CALL insertar_detalle_compra(8, 13, 'Sertraline');
+
+/*Llamamos a la view para ver la insercion a detalle_compra*/
+SELECT * from detalle_compra_historica1;
+
+/*Tambien podemos visualizar la insercion desde detalle_compra o en la vista detalle_compra_proveedores*/
+SELECT * from detalle_compra;
+select* from detalle_compra_proveedores;
+
+
+
+
+
+
+
+
+/*Funcion para calcular el total de la compra en detalle_compra y luego llamarla en el stored procedure para introducir el total de la compra en base al id de la compra*/
+
+
+DROP FUNCTION  IF EXISTS calcular_total_compra;
+
+DELIMITER $$
+CREATE FUNCTION calcular_total_compra (c_compra_id INT)
+RETURNS DECIMAL(10, 2)
+
+-- TIPOS DE FUNCIONES 
+-- READS SQL DATA
+-- NO SQL 
+DETERMINISTIC 
+-- NO DETERMINISTIC
+
+BEGIN
+    DECLARE total DECIMAL(10, 2);
+	SELECT SUM(cantidad * precio_unitario) into total
+    FROM detalle_compra
+    WHERE compra_id = c_compra_id;
+    
+    RETURN IFNULL(total, 0); 
+END $$
+DELIMITER ;
+
+select calcular_total_compra(4) as total_compra;
+
+select * from compra;
+
+
+/*Procedimiento para ingresar la compra*/
+DROP PROCEDURE IF EXISTS insertar_compra;  
+DELIMITER $$  
+
+CREATE PROCEDURE insertar_compra(  
+    IN c_compra_id INT,   
+    IN c_numero_comprobante VARCHAR(255),  
+    IN c_proveedor_id INT  
+)   
+BEGIN  
+    DECLARE total_compras DECIMAL(10, 2);  
+    DECLARE error_message VARCHAR(255);  
+    DECLARE total_proveedor_id INT;  
+    DECLARE existe_compra INT;  
+
+    /* Validar que los valores no sean nulos o negativos si corresponde */  
+    IF c_proveedor_id <= 0 THEN  
+        SET error_message = 'El id del proveedor debe ser mayor a 1';  
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;  
+    END IF;  
+
+    SELECT MAX(proveedor_id)  
+    INTO total_proveedor_id  
+    FROM proveedor;  
+
+    IF c_proveedor_id >= total_proveedor_id THEN  
+        SET error_message = CONCAT('El id del proveedor debe ser menor a ', total_proveedor_id);   
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;  
+    END IF;  
+
+    IF c_compra_id <= 0 THEN  
+        SET error_message = 'El id de compra debe ser mayor que cero';  
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;  
+    END IF;  
+
+    /* Verificar si el compra_id ya existe */  
+    SELECT COUNT(*)  
+    INTO existe_compra  
+    FROM compra  
+    WHERE compra_id = c_compra_id;  
+
+    /* Calcular el total solo si ya existe */  
+    IF existe_compra > 0 THEN  
+        -- Obtener el total de la compra existente  
+        SET total_compras = calcular_total_compra(c_compra_id);  
+
+        -- Actualizar el registro existente  
+        UPDATE compra  
+        SET numero_comprobante = c_numero_comprobante,  
+            fecha_compra = NOW(),  
+            total = total_compras,  
+            proveedor_id = c_proveedor_id  
+        WHERE compra_id = c_compra_id;  
+    ELSE  
+        -- Si no existe, entonces insertamos  
+        INSERT INTO compra(compra_id, numero_comprobante, fecha_compra, total, proveedor_id)   
+        VALUES(c_compra_id, c_numero_comprobante, NOW(), 0, c_proveedor_id); -- El total se establece en 0 inicialmente  
+    END IF;  
+END $$  
+
+DELIMITER ;  
+
+CREATE TABLE compra_historica(compra_id INT, numero_comprobante VARCHAR(100), fecha datetime, total DECIMAL(10, 2), proveedor_id INT, estado VARCHAR(100)
+);
+
+/*TRIGGER para mantener un registro constante del ingreso de los datos a la tabla compra*/
+DROP TRIGGER IF EXISTS trigger_compra_alta;
+DELIMITER $$
+CREATE TRIGGER trigger_compra_alta
+AFTER INSERT ON compra
+FOR EACH ROW
+BEGIN
+	INSERT INTO compra_historica(compra_id, numero_comprobante, fecha, total, proveedor_id, estado)
+		VALUES (NEW.compra_id, NEW.numero_comprobante, now(), NEW.total, NEW.proveedor_id,'INGRESADA');
+
+END $$
+DELIMITER ;
+
+/*TRIGGER para mantener un registro constante del ingreso de los datos a la tabla compra*/
+DROP TRIGGER IF EXISTS trigger_compra_actualizacion;  
+
+DELIMITER $$  
+
+CREATE TRIGGER trigger_compra_actualizacion  
+AFTER UPDATE ON compra  
+FOR EACH ROW   
+BEGIN  
+    INSERT INTO compra_historica(compra_id, numero_comprobante, fecha, total, proveedor_id, estado)  
+    VALUES (NEW.compra_id, NEW.numero_comprobante, NOW(), NEW.total, NEW.proveedor_id, 'ACTUALIZADO');  
+END $$  
+
+DELIMITER ;  
+
+
+/*Llamamos al procedimiento*/
+CALL insertar_compra(9, 'FC-2024-009', 3);
+CALL insertar_compra(10, 'FC-2024-010', 4);
+CALL insertar_compra(11, 'FC-2024-011', 1);
+CALL insertar_compra(12, 'FC-2024-012', 5);
+CALL insertar_compra(13, 'FC-2024-013', 3);
+CALL insertar_compra(14, 'FC-2024-014', 4);
+select * from compra;
+
+select * from compra_historica;
+
+
+
+select * from compra;
+
+
+
+
+
+/*Stored Procedure para borrar medicamentos de la tabla medicamento_laboratorio por nombre del medicamento(mostrara un booleano true en caso de estar eliminado)*/
+
+DROP PROCEDURE if exists borrar_medicamento_laboratorio;
+DELIMITER $$
+CREATE PROCEDURE borrar_medicamento_laboratorio(
+	IN m_nombre_medicamento VARCHAR(100)
+) 
+BEGIN
+	DECLARE i_medicamento_laboratorio_id INT;
+    DECLARE error_message VARCHAR(255);
+    
+select ml.medicamento_laboratorio_id
+into i_medicamento_laboratorio_id
+from medicamento_laboratorio as ml
+where m_nombre_medicamento = ml.nombre;
+
+IF i_medicamento_laboratorio_id IS NULL THEN 
+
+	SET error_message = 'El nombre del medicamento ingresado no existe en la base de datos o tiene un error tipográfico';  
+	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;  
+	
+ELSE 
+	UPDATE medicamento_laboratorio  -- actualizamos la tabla para agregar el medicamento eliminado
+    SET eliminado = TRUE
+    WHERE medicamento_laboratorio_id = i_medicamento_laboratorio_id;
+    
+END IF;
+END$$
+DELIMITER ;
+
+
+
+DROP TABLE IF EXISTS detalle_medicamentos_laboratorio;
+/*histórico de cambios de medicamentos_laboratorio*/
+CREATE TABLE IF NOT EXISTS detalle_medicamentos_laboratorio (
+    medicamento_laboratorio_id INT,
+    nombre VARCHAR(100),
+    presentacion VARCHAR(100),
+    farmaco_id INT,
+    laboratorio_id INT,
+    fecha_hora datetime,
+    usuario VARCHAR(100),
+    operacion VARCHAR(100)
+);
+
+
+/*Creamos vista para visualizar los medicamentos eliminados*/
+CREATE VIEW detalle_medicamentos_eliminados1 AS 
+SELECT
+	ml.medicamento_laboratorio_id AS "ID del Medicamento",
+    dme.nombre AS "Nombre",
+    dme.presentacion AS "Presentacion",
+    f.nombre AS "Farmaco",
+    l.nombre AS "Laboratorio",
+    dme.fecha_hora AS "Fecha",
+    dme.usuario AS "Usuario",
+    dme.operacion AS "Operacion"
+FROM detalle_medicamentos_laboratorio dme
+	LEFT JOIN laboratorio l ON l.laboratorio_id = dme.laboratorio_id
+    LEFT JOIN medicamento_laboratorio ml ON ml.medicamento_laboratorio_id = dme.medicamento_laboratorio_id
+    LEFT JOIN farmaco f ON f.farmaco_id = dme.farmaco_id
+ORDER BY dme.fecha_hora DESC;
+
+
+/*TRIGGER para mantener un registro constante del eliminacion de los datos a detalle_compra*/
+DROP TRIGGER IF EXISTS trigger_detalle_medicamentos_eliminados;
+DELIMITER $$
+CREATE TRIGGER trigger_detalle_medicamentos_eliminados
+AFTER UPDATE ON medicamento_laboratorio
+FOR EACH ROW
+BEGIN
+	INSERT INTO detalle_medicamentos_laboratorio(medicamento_laboratorio_id, nombre, presentacion, farmaco_id, laboratorio_id, fecha_hora, usuario, operacion)
+		VALUES (OLD.medicamento_laboratorio_id, OLD.nombre, OLD.presentacion, OLD.farmaco_id, OLD.laboratorio_id, now(), user(), 'BAJA');
+END $$
+DELIMITER ;
+
+/*Hacemos una consulta para ver que medicamento queremos borrar*/
+select * from medicamento_laboratorio;
+/*borramos el medicamento con el stored procedure*/
+CALL borrar_medicamento_laboratorio('Mometasone');
+CALL borrar_medicamento_laboratorio('Rivaroxaban');
+CALL borrar_medicamento_laboratorio('Propranolol');
+/*LLamamos a la vista detalle_medicamentos_laboratorio de medicamentos eliminados agregados mediamente el trigger*/
+select * from detalle_medicamentos_eliminados1;
+/*Tambien podremos ver que esta eliminado en la tabla medicamento_laboratorio*/
+select * from medicamento_laboratorio;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*funcion y procedimiento para actualizar y poner el valor total de las ventas a la nueva columna total en ventas*/
+
+DROP FUNCTION  IF EXISTS calcular_total_venta;
+
+DELIMITER $$
+CREATE FUNCTION calcular_total_venta (v_venta_id INT)
+RETURNS DECIMAL(10, 2)
+
+-- TIPOS DE FUNCIONES 
+-- READS SQL DATA
+-- NO SQL 
+DETERMINISTIC 
+-- NO DETERMINISTIC
+
+BEGIN
+    DECLARE total DECIMAL(10, 2);
+	SELECT SUM(cantidad * precio_unitario) into total
+    FROM detalle_venta
+    WHERE venta_id = v_venta_id;
+    
+    RETURN IFNULL(total, 0); 
+END $$
+DELIMITER ;
+
+
+/*Procedimiento para actualizar las compras, agregamos la columna total en la tabla venta*/
+DROP PROCEDURE IF EXISTS actualizar_total_venta;
+DELIMITER $$  
+
+CREATE PROCEDURE actualizar_total_venta()  
+BEGIN  
+    UPDATE venta 
+    SET precio_total = calcular_total_venta(venta_id);
+    
+END $$  
+
+DELIMITER ;  
+
+
+CALL actualizar_total_venta();  
+
+select * from venta;
+
 
 
 
