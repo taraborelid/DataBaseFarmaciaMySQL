@@ -842,13 +842,45 @@ select * from clientes_detalles;
 select * from medicamento_laboratorio;
 select * from compra;
 select * from detalle_compra;
-CALL insertar_compra(9, "FC-2024-009", "2024-11-15", 3, '3, 4, 6, 6', 'Aspirina, Cipro, Codeine, Tylenol');
+
+
+
+
+
+
+/*Funcion para calcular el total de la compra en detalle_compra y luego llamarla en el stored procedure para introducir el total de la compra en base al id de la compra*/
+
+DROP FUNCTION  IF EXISTS calcular_total_compra;
+
+DELIMITER $$
+CREATE FUNCTION calcular_total_compra (c_compra_id INT)
+RETURNS DECIMAL(10, 2)
+
+-- TIPOS DE FUNCIONES 
+-- READS SQL DATA
+-- NO SQL 
+DETERMINISTIC 
+-- NO DETERMINISTIC
+
+BEGIN
+    DECLARE total DECIMAL(10, 2);
+	SELECT SUM(cantidad * precio_unitario) into total
+    FROM detalle_compra
+    WHERE compra_id = c_compra_id;
+    
+    RETURN IFNULL(total, 0); 
+END $$
+DELIMITER ;
+
+select calcular_total_compra(4) as total_compra;
+
+select * from compra;
 
 /*Procedimiento para ingresar las compras y los detalles por comprobante, compra id, fecha_compra, proveedor, la cantidad y los medicamentos*/
-DROP PROCEDURE IF EXISTS insertar_compra;
+DROP PROCEDURE IF EXISTS insertar_compra_detallecompra;
 DELIMITER //
 
-CREATE PROCEDURE insertar_compra(
+CREATE PROCEDURE insertar_compra_detallecompra(
 	IN i_compra_id INT,
 	IN i_numero_comprobante VARCHAR(50),
     IN i_fecha_compra DATETIME,
@@ -961,7 +993,7 @@ END //
 
 DELIMITER ;    
 
-
+CALL insertar_compra_detallecompra(11, "FC-2024-009", "2024-11-15", 3, '3, 4, 6, 6', 'Aspirina, Cipro, Codeine, Tylenol');
 
 
 
@@ -1001,7 +1033,7 @@ DELIMITER ;
 
 DROP PROCEDURE if exists insertar_detalle_compra;
 DELIMITER $$
-CREATE PROCEDURE insertar_compra(
+CREATE PROCEDURE insertar_detalle_compra(
 	IN i_cantidad INT, 
     IN i_compra_id INT,
     IN i_nombre VARCHAR(255)
@@ -1130,6 +1162,8 @@ SELECT * FROM medicamento_laboratorio;
 
 /*Insertamos compras*/
 /*CANTIDAD, COMPRA_ID, NOMBRE DEL MEDICAMENTO*/
+
+/*
 CALL insertar_detalle_compra(3, 5, 'Zolpidem');
 CALL insertar_detalle_compra(4, 9, 'Brufen');
 CALL insertar_detalle_compra(2, 9, 'Tramadol');
@@ -1140,7 +1174,7 @@ CALL insertar_detalle_compra(10, 11, 'Plavix 300');
 CALL insertar_detalle_compra(3, 12, 'Codeine');
 CALL insertar_detalle_compra(7, 12, 'Lyrica');
 CALL insertar_detalle_compra(8, 13, 'Sertraline');
-
+*/
 /*Llamamos a la view para ver la insercion a detalle_compra*/
 SELECT * from detalle_compra_historica1;
 
@@ -1155,38 +1189,11 @@ select* from detalle_compra_proveedores;
 
 
 
-/*Funcion para calcular el total de la compra en detalle_compra y luego llamarla en el stored procedure para introducir el total de la compra en base al id de la compra*/
 
-
-DROP FUNCTION  IF EXISTS calcular_total_compra;
-
-DELIMITER $$
-CREATE FUNCTION calcular_total_compra (c_compra_id INT)
-RETURNS DECIMAL(10, 2)
-
--- TIPOS DE FUNCIONES 
--- READS SQL DATA
--- NO SQL 
-DETERMINISTIC 
--- NO DETERMINISTIC
-
-BEGIN
-    DECLARE total DECIMAL(10, 2);
-	SELECT SUM(cantidad * precio_unitario) into total
-    FROM detalle_compra
-    WHERE compra_id = c_compra_id;
-    
-    RETURN IFNULL(total, 0); 
-END $$
-DELIMITER ;
-
-select calcular_total_compra(4) as total_compra;
-
-select * from compra;
 
 
 /*Procedimiento para ingresar la compra*/
-DROP PROCEDURE IF EXISTS insertar_compra;  
+DROP PROCEDURE IF EXISTS insertar_compra
 DELIMITER $$  
 
 CREATE PROCEDURE insertar_compra(  
@@ -1280,12 +1287,14 @@ DELIMITER ;
 
 
 /*Llamamos al procedimiento*/
+/*
 CALL insertar_compra(9, 'FC-2024-009', 3);
 CALL insertar_compra(10, 'FC-2024-010', 4);
 CALL insertar_compra(11, 'FC-2024-011', 1);
 CALL insertar_compra(12, 'FC-2024-012', 5);
 CALL insertar_compra(13, 'FC-2024-013', 3);
 CALL insertar_compra(14, 'FC-2024-014', 4);
+*/
 select * from compra;
 
 select * from compra_historica;
@@ -1442,14 +1451,3 @@ DELIMITER ;
 CALL actualizar_total_venta();  
 
 select * from venta;
-
-
-
-
-    
-
-
-	
-
-
-
