@@ -7,8 +7,9 @@
 4. [DER (Diagrama Entidad Relación)](#der-diagrama-entidad-relación)  
 
 ## Introducción  
-El presente proyecto tiene como finalidad el diseño e implementación de una base de datos eficiente para una farmacia.
+El presente proyecto es una Base de datos relacional para la gestión de una farmacia, desarrollada en MySQL. Incluye estructura normalizada con más de 20 tablas, relaciones entre entidades clave (medicamentos, ventas, proveedores, clientes, stock, personal), procedimientos almacenados con validaciones lógicas y funciones para automatizar operaciones de compra.
 En un entorno donde la gestión adecuada de medicamentos, proveedores y clientes es fundamental, este sistema permitirá optimizar los procesos operativos y mejorar la calidad del servicio. La base de datos se enfocará en varias áreas clave, incluyendo la administración de inventarios, la gestión de compras y ventas, el seguimiento de recetas médicas, y el registro de interacciones con obras sociales y prepagas. 
+
 
 ## Objetivo  
 1. **Gestión de Medicamentos**  
